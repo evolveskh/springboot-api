@@ -1,0 +1,32 @@
+### Variables
+@baseUrl = http://localhost:8080/api/users
+
+### 1. Create a New User
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "password123",
+  "email": "john.doe@example.com"
+}
+
+### 2. Get All Users
+GET {{baseUrl}}
+
+### 3. Get User by ID (Change ID as needed)
+GET {{baseUrl}}/2
+
+### 4. Update an Existing User
+PUT {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "username": "johndoe_updated",
+  "password": "newpassword456",
+  "email": "john.updated@example.com"
+}
+
+### 5. Delete a User
+DELETE {{baseUrl}}/1
+

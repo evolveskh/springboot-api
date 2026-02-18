@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: springboot-api
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spring-network
+
+volumes:
+  postgres_data:
+
+networks:
+  spring-network:
+    driver: bridge
+
+# Start the container
+# docker-compose up -d
+
+# Check if it's running
+# docker-compose ps
+
+# View logs
+# docker-compose logs postgres
+
+# Stop the container
+# docker-compose down
+
+#  Stop and remove volumes (deletes all data)
+#  docker-compose down -v
+
+# Restart
+# docker-compose restart
+
+# Access PostgreSQL CLI
+# docker exec -it springboot-postgres psql -U myuser -d mydb
+
+# View container logs
+# docker-compose logs -f postgres

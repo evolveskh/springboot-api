@@ -1,0 +1,25 @@
+### Variables
+@baseUrl = http://localhost:8080/api/accounts
+
+### 1. Create a New Account
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "userId": 12
+}
+
+### 2. Get All Accounts
+GET {{baseUrl}}
+
+### 3. Get Account by ID (Change ID as needed)
+GET {{baseUrl}}/12
+
+### 4. Get Account by Account Number
+GET {{baseUrl}}/number/0xJdHkeHufQoOYLjsg3ocVUagjYf1GUXb41XHawrYw
+
+### 5. Get All Accounts for a Specific User
+GET {{baseUrl}}/user/12
+
+### 6. Delete an Account
+DELETE {{baseUrl}}/2

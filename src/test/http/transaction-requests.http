@@ -1,0 +1,45 @@
+### Variables
+@baseUrl = http://localhost:8080/api/transactions
+
+### 1. Create a TRANSFER (Account to Account)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "fromAccountId": 3,
+  "toAccountId": 4,
+  "amount": 100.00,
+  "type": "TRANSFER"
+}
+
+### 2. Create a DEPOSIT (Money coming in, no sender)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "toAccountId": 3,
+  "amount": 500.00,
+  "type": "DEPOSIT"
+}
+
+### 3. Create a WITHDRAWAL (Money going out, no receiver)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "fromAccountId": 4,
+  "amount": 50.00,
+  "type": "WITHDRAWAL"
+}
+
+### 4. Get All Transactions
+GET {{baseUrl}}
+
+### 5. Get Transaction by ID
+GET {{baseUrl}}/9
+
+### 6. Get All Transactions Sent FROM an Account
+GET {{baseUrl}}/from/3
+
+### 7. Get All Transactions Received TO an Account
+GET {{baseUrl}}/to/4
