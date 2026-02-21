@@ -7,6 +7,7 @@ import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.exception.UserAlreadyExistsException;
 import com.example.springbootapi.mapper.UserMapper;
 import com.example.springbootapi.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponseDTO> getAllUsers() {
@@ -39,6 +42,7 @@ public class UserService {
             throw new UserAlreadyExistsException("Username '" + userRequestDTO.getUsername() + "' already exists!");
         }
         User user = userMapper.toEntity(userRequestDTO);
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         User savedUser = userRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
     }
@@ -46,7 +50,7 @@ public class UserService {
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(userRequestDTO.getUsername());
-            user.setPassword(userRequestDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
             user.setEmail(userRequestDTO.getEmail());
             User updatedUser = userRepository.save(user);
             return userMapper.toResponseDTO(updatedUser);

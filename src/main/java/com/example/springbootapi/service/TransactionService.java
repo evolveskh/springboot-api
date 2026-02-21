@@ -4,12 +4,12 @@ import com.example.springbootapi.dto.CreateTransactionRequest;
 import com.example.springbootapi.dto.TransactionDTO;
 import com.example.springbootapi.entity.Account;
 import com.example.springbootapi.entity.Transaction;
+import com.example.springbootapi.exception.InsufficientFundsException;
 import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,20 +38,39 @@ public class TransactionService {
                 if (request.getFromAccountId() == null || request.getToAccountId() == null) {
                     throw new IllegalArgumentException("Transfer transaction requires both from and to accounts");
                 }
+                if (request.getFromAccountId().equals(request.getToAccountId())) {
+                    throw new IllegalArgumentException("Cannot transfer to the same account");
+                }
                 fromAccount = findAccount(request.getFromAccountId());
                 toAccount = findAccount(request.getToAccountId());
+                if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
+                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.getBalance() + ", Requested: " + request.getAmount());
+                } else {
+                    fromAccount.setBalance(fromAccount.getBalance().subtract(request.getAmount()));
+                    toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
+                }
+                accountRepository.save(fromAccount);
+                accountRepository.save(toAccount);
                 break;
             case DEPOSIT:
                 if (request.getToAccountId() == null) {
                     throw new IllegalArgumentException("Deposit transaction requires to account");
                 }
                 toAccount = findAccount(request.getToAccountId());
+                toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
+                accountRepository.save(toAccount);
                 break;
             case WITHDRAWAL:
                 if (request.getFromAccountId() == null) {
                     throw new IllegalArgumentException("Withdrawal transaction requires from account");
                 }
                 fromAccount = findAccount(request.getFromAccountId());
+                if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
+                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.
+                            getBalance() + ", Requested: " + request.getAmount());
+                }
+                fromAccount.setBalance(fromAccount.getBalance().subtract(request.getAmount()));
+                accountRepository.save(fromAccount);
                 break;
         }
 

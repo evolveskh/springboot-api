@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -54,5 +55,11 @@ public class AccountController {
         String message = accountService.deleteAccount(id);
         ApiResponse response = new ApiResponse(200, message);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<BigDecimal> getBalance(@PathVariable Long id) {
+        BigDecimal balance = accountService.getAccountBalance(id);
+        return ResponseEntity.ok(balance);
     }
 }

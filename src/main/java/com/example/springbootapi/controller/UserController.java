@@ -1,8 +1,6 @@
 package com.example.springbootapi.controller;
 import com.example.springbootapi.dto.UserRequestDTO;
 import com.example.springbootapi.dto.UserResponseDTO;
-import com.example.springbootapi.exception.ResourceNotFoundException;
-import com.example.springbootapi.repository.UserRepository;
 import com.example.springbootapi.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,11 +13,9 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -44,10 +40,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cannot delete: User not found with id: " + id);
-        }
-        userRepository.deleteById(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

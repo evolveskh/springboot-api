@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,9 +71,14 @@ public class AccountService {
         return accountMapper.toDTO(savedAccount);
     }
 
-    public AccountDTO getAccountById(Long id){
+    public AccountDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
         return accountMapper.toDTO(account);
+    }
+
+    public BigDecimal getAccountBalance(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        return account.getBalance();
     }
 
     public AccountDTO getAccountByAccountNumber(String accountNumber) {

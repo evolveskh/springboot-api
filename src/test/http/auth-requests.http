@@ -1,0 +1,24 @@
+### Register a new user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "john",
+  "password": "password123"
+}
+### Login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "john",
+  "password": "password123"
+}
+### Refresh token (paste your refresh token from login response)
+POST http://localhost:8080/api/auth/refresh
+Content-Type: text/plain
+
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NzE2NTA3MTMsImV4cCI6MTc3MjI1NTUxM30.sr6_dpLNB9paHz-8u_VjGQOG2Vsg0nwmUuCry_gdesw
+### Test authenticated endpoint (paste your access token from login response)
+GET http://localhost:8080/api/accounts
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NzE2NTA3MTMsImV4cCI6MTc3MjI1NTUxM30.sr6_dpLNB9paHz-8u_VjGQOG2Vsg0nwmUuCry_gdesw

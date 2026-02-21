@@ -1,45 +1,93 @@
 ### Variables
 @baseUrl = http://localhost:8080/api/transactions
+@accountsUrl = http://localhost:8080/api/accounts
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTc3MTY1NDQ3MSwiZXhwIjoxNzcxNjU1MzcxfQ.uEzI66fWT9pUB-ULOqi-wwedeOEnf8PKhJmgOVWL65k
 
-### 1. Create a TRANSFER (Account to Account)
+### 1. Deposit 500 to account 1 (do this first to fund the account)
 POST {{baseUrl}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "fromAccountId": 3,
-  "toAccountId": 4,
-  "amount": 100.00,
-  "type": "TRANSFER"
-}
-
-### 2. Create a DEPOSIT (Money coming in, no sender)
-POST {{baseUrl}}
-Content-Type: application/json
-
-{
-  "toAccountId": 3,
+  "toAccountId": 1,
   "amount": 500.00,
   "type": "DEPOSIT"
 }
 
-### 3. Create a WITHDRAWAL (Money going out, no receiver)
+### 2. Check balance after deposit (should be 500.00)
+GET {{accountsUrl}}/1/balance
+Authorization: Bearer {{token}}
+
+### 3. Withdraw 200 from account 1
 POST {{baseUrl}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "fromAccountId": 4,
-  "amount": 50.00,
+  "fromAccountId": 1,
+  "amount": 200.00,
   "type": "WITHDRAWAL"
 }
 
-### 4. Get All Transactions
+### 4. Check balance after withdrawal (should be 300.00)
+GET {{accountsUrl}}/1/balance
+Authorization: Bearer {{token}}
+
+### 5. Transfer 100 from account 1 to account 2
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fromAccountId": 1,
+  "toAccountId": 2,
+  "amount": 100.00,
+  "type": "TRANSFER"
+}
+
+### 6. Check account 1 balance after transfer (should be 200.00)
+GET {{accountsUrl}}/1/balance
+Authorization: Bearer {{token}}
+
+### 7. Check account 2 balance after transfer (should be 100.00)
+GET {{accountsUrl}}/2/balance
+Authorization: Bearer {{token}}
+
+### 8. Withdraw more than balance (should return 400 Insufficient Funds)
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fromAccountId": 1,
+  "amount": 99999.00,
+  "type": "WITHDRAWAL"
+}
+
+### 9. Transfer to same account (should return 400 Bad Request)
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fromAccountId": 1,
+  "toAccountId": 1,
+  "amount": 10.00,
+  "type": "TRANSFER"
+}
+
+### 10. Get all transactions
 GET {{baseUrl}}
+Authorization: Bearer {{token}}
 
-### 5. Get Transaction by ID
-GET {{baseUrl}}/9
+### 11. Get transaction by ID
+GET {{baseUrl}}/1
+Authorization: Bearer {{token}}
 
-### 6. Get All Transactions Sent FROM an Account
-GET {{baseUrl}}/from/3
+### 12. Get transactions sent FROM account 1
+GET {{baseUrl}}/from/1
+Authorization: Bearer {{token}}
 
-### 7. Get All Transactions Received TO an Account
-GET {{baseUrl}}/to/4
+### 13. Get transactions received TO account 1
+GET {{baseUrl}}/to/1
+Authorization: Bearer {{token}}
