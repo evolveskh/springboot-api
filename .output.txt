@@ -1,0 +1,1377 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ---------------------< com.example:springboot-api >---------------------
+[INFO] Building springboot-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ springboot-api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO]
+[INFO] --- kotlin:2.2.20:compile (compile) @ springboot-api ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- compiler:3.13.0:compile (compile) @ springboot-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ springboot-api ---
+[INFO] skip non existing resourceDirectory /Users/madonathy/Developer/springboot/springboot-api/src/test/resources
+[INFO]
+[INFO] --- kotlin:2.2.20:test-compile (test-compile) @ springboot-api ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (testCompile) @ springboot-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- surefire:3.5.2:test (default-test) @ springboot-api ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.springbootapi.integration.TransactionServiceIntegrationTest
+19:24:19.062 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.springbootapi.integration.TransactionServiceIntegrationTest]: TransactionServiceIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:24:19.142 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.springbootapi.SpringbootApiApplication for test class com.example.springbootapi.integration.TransactionServiceIntegrationTest
+19:24:19.214 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+19:24:19.216 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+19:24:19.230 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.20.4
+19:24:19.341 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+19:24:19.504 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+19:24:19.505 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+19:24:19.519 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker:
+  Server Version: 28.0.4
+  API Version: 1.48
+  Operating System: Docker Desktop
+  Total Memory: 3919 MB
+  Labels:
+    com.docker.desktop.address=unix:///Users/madonathy/Library/Containers/com.docker.docker/Data/docker-cli.sock
+19:24:19.537 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Creating container for image: testcontainers/ryuk:0.11.0
+19:24:19.691 [main] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
+19:24:19.791 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 is starting: c4fc257316baaa08de0c53353fda719033944510147b494670da2a377431dc9d
+19:24:20.110 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 started in PT0.572945S
+19:24:20.117 [main] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+19:24:20.118 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+19:24:20.118 [main] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+19:24:20.119 [main] INFO tc.redis:7-alpine -- Creating container for image: redis:7-alpine
+19:24:20.156 [main] INFO tc.redis:7-alpine -- Container redis:7-alpine is starting: 21f58c321470e51cac8f88f9c7dab909257835303a4a12627847cb99f0fac0ad
+19:24:20.460 [main] INFO tc.redis:7-alpine -- Container redis:7-alpine started in PT0.341664S
+19:24:20.461 [main] INFO tc.postgres:15-alpine -- Creating container for image: postgres:15-alpine
+19:24:20.484 [main] INFO tc.postgres:15-alpine -- Container postgres:15-alpine is starting: a15981e7c2bb34ac8c699eaa3c7c19354bc18b0eed1f3074b750e5cef502d164
+19:24:21.428 [main] INFO tc.postgres:15-alpine -- Container postgres:15-alpine started in PT0.967091S
+19:24:21.430 [main] INFO tc.postgres:15-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:50480/mydb?loggerLevel=OFF)
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.4.2)
+2026-02-22T19:24:21.676+08:00  INFO 11673 --- [springboot-api] [           main] .e.s.i.TransactionServiceIntegrationTest : Starting TransactionServiceIntegrationTest using Java 17.0.15 with PID 11673 (started by madonathy in /Users/madonathy/Developer/springboot/springboot-api)
+2026-02-22T19:24:21.678+08:00  INFO 11673 --- [springboot-api] [           main] .e.s.i.TransactionServiceIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-02-22T19:24:22.531+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-22T19:24:22.531+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-22T19:24:22.611+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 3 JPA repository interfaces.
+2026-02-22T19:24:22.624+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-22T19:24:22.624+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-22T19:24:22.634+08:00  INFO 11673 --- [springboot-api] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.springbootapi.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-22T19:24:22.634+08:00  INFO 11673 --- [springboot-api] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.springbootapi.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-22T19:24:22.634+08:00  INFO 11673 --- [springboot-api] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.springbootapi.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-22T19:24:22.635+08:00  INFO 11673 --- [springboot-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2026-02-22T19:24:23.120+08:00  INFO 11673 --- [springboot-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-02-22T19:24:23.132+08:00  INFO 11673 --- [springboot-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-22T19:24:23.132+08:00  INFO 11673 --- [springboot-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-22T19:24:23.176+08:00  INFO 11673 --- [springboot-api] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-22T19:24:23.177+08:00  INFO 11673 --- [springboot-api] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1489 ms
+2026-02-22T19:24:23.667+08:00  INFO 11673 --- [springboot-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:50480/mydb?loggerLevel=OFF (PostgreSQL 15.16)
+2026-02-22T19:24:23.696+08:00  INFO 11673 --- [springboot-api] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-02-22T19:24:23.698+08:00  INFO 11673 --- [springboot-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.011s)
+2026-02-22T19:24:23.714+08:00  INFO 11673 --- [springboot-api] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-02-22T19:24:23.768+08:00  INFO 11673 --- [springboot-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-02-22T19:24:23.777+08:00  INFO 11673 --- [springboot-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - init schema"
+2026-02-22T19:24:23.813+08:00  INFO 11673 --- [springboot-api] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "public", now at version v1 (execution time 00:00.016s)
+2026-02-22T19:24:23.886+08:00  INFO 11673 --- [springboot-api] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-22T19:24:23.927+08:00  INFO 11673 --- [springboot-api] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2026-02-22T19:24:23.948+08:00  INFO 11673 --- [springboot-api] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-02-22T19:24:24.101+08:00  INFO 11673 --- [springboot-api] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-22T19:24:24.119+08:00  INFO 11673 --- [springboot-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-22T19:24:24.153+08:00  INFO 11673 --- [springboot-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4fe91eed
+2026-02-22T19:24:24.154+08:00  INFO 11673 --- [springboot-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-22T19:24:24.177+08:00  WARN 11673 --- [springboot-api] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-22T19:24:24.189+08:00  INFO 11673 --- [springboot-api] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+        Database driver: undefined/unknown
+        Database version: 15.16
+        Autocommit mode: undefined/unknown
+        Isolation level: undefined/unknown
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2026-02-22T19:24:24.709+08:00  INFO 11673 --- [springboot-api] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-22T19:24:24.746+08:00  INFO 11673 --- [springboot-api] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-22T19:24:25.065+08:00  INFO 11673 --- [springboot-api] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-22T19:24:25.066+08:00  WARN 11673 --- [springboot-api] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-22T19:24:25.206+08:00  WARN 11673 --- [springboot-api] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-22T19:24:25.528+08:00  INFO 11673 --- [springboot-api] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-02-22T19:24:26.134+08:00  INFO 11673 --- [springboot-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 50495 (http) with context path '/'
+2026-02-22T19:24:26.146+08:00  INFO 11673 --- [springboot-api] [           main] .e.s.i.TransactionServiceIntegrationTest : Started TransactionServiceIntegrationTest in 4.667 seconds (process running for 7.565)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-02-22T19:24:26.727+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+2026-02-22T19:24:26.755+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+2026-02-22T19:24:26.766+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+2026-02-22T19:24:26.806+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.044+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.071+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.087+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.091+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.100+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.103+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.105+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.116+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.124+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.131+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+Hibernate:
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+2026-02-22T19:24:27.509+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.560+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+2026-02-22T19:24:27.571+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        transactions
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        transactions
+    where
+        id=?
+2026-02-22T19:24:27.575+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+2026-02-22T19:24:27.578+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        accounts
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        accounts
+    where
+        id=?
+2026-02-22T19:24:27.580+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        accounts
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        accounts
+    where
+        id=?
+2026-02-22T19:24:27.583+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+2026-02-22T19:24:27.586+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.user_id,
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at
+    from
+        accounts a1_0
+    where
+        a1_0.user_id=?
+Hibernate:
+    select
+        a1_0.user_id,
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at
+    from
+        accounts a1_0
+    where
+        a1_0.user_id=?
+2026-02-22T19:24:27.590+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        users
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        users
+    where
+        id=?
+2026-02-22T19:24:27.594+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.693+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.704+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.708+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.710+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.719+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.721+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.723+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.726+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.728+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.730+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+Hibernate:
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+2026-02-22T19:24:27.740+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.742+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.749+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.756+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.760+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+2026-02-22T19:24:27.770+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.amount,
+        t1_0.created_at,
+        t1_0.from_account_id,
+        t1_0.to_account_id,
+        t1_0.type,
+        t1_0.updated_at
+    from
+        transactions t1_0
+2026-02-22T19:24:27.774+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        transactions
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        transactions
+    where
+        id=?
+2026-02-22T19:24:27.778+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+2026-02-22T19:24:27.780+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        accounts
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        accounts
+    where
+        id=?
+2026-02-22T19:24:27.782+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        accounts
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        accounts
+    where
+        id=?
+2026-02-22T19:24:27.790+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+2026-02-22T19:24:27.792+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.user_id,
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at
+    from
+        accounts a1_0
+    where
+        a1_0.user_id=?
+Hibernate:
+    select
+        a1_0.user_id,
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at
+    from
+        accounts a1_0
+    where
+        a1_0.user_id=?
+2026-02-22T19:24:27.795+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    delete
+    from
+        users
+    where
+        id=?
+Hibernate:
+    delete
+    from
+        users
+    where
+        id=?
+2026-02-22T19:24:27.800+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        u1_0.id
+    from
+        users u1_0
+    where
+        u1_0.username=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.887+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        users
+        (created_at, email, password, role, updated_at, username)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.891+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.894+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.897+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.906+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+Hibernate:
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username
+    from
+        users u1_0
+    where
+        u1_0.id=?
+2026-02-22T19:24:27.910+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        a1_0.id
+    from
+        accounts a1_0
+    where
+        a1_0.account_number=?
+    fetch
+        first ? rows only
+2026-02-22T19:24:27.913+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        accounts
+        (account_number, balance, created_at, updated_at, user_id)
+    values
+        (?, ?, ?, ?, ?)
+2026-02-22T19:24:27.925+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.928+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.935+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+Hibernate:
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+2026-02-22T19:24:27.946+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.952+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.955+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        transactions
+        (amount, created_at, from_account_id, to_account_id, type, updated_at)
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-02-22T19:24:27.970+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+Hibernate:
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+2026-02-22T19:24:27.973+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+Hibernate:
+    update
+        accounts
+    set
+        account_number=?,
+        balance=?,
+        updated_at=?,
+        user_id=?
+    where
+        id=?
+2026-02-22T19:24:27.986+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:27.993+08:00 DEBUG 11673 --- [springboot-api] [           main] org.hibernate.SQL                        :
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.account_number,
+        a1_0.balance,
+        a1_0.created_at,
+        a1_0.updated_at,
+        a1_0.user_id
+    from
+        accounts a1_0
+    where
+        a1_0.id=?
+2026-02-22T19:24:29.273+08:00  INFO 11673 --- [springboot-api] [xecutorLoop-1-1] i.l.core.protocol.ConnectionWatchdog     : Reconnecting, last destination was localhost/127.0.0.1:50478
+2026-02-22T19:24:29.343+08:00  WARN 11673 --- [springboot-api] [ioEventLoop-4-2] i.l.core.protocol.ConnectionWatchdog     : Cannot reconnect to [localhost/<unresolved>:50478]: Connection refused: localhost/127.0.0.1:50478
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.38 s -- in com.example.springbootapi.integration.TransactionServiceIntegrationTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.615 s
+[INFO] Finished at: 2026-02-22T19:24:32+08:00
+[INFO] ------------------------------------------------------------------------

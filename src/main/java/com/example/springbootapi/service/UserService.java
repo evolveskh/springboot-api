@@ -7,6 +7,9 @@ import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.exception.UserAlreadyExistsException;
 import com.example.springbootapi.mapper.UserMapper;
 import com.example.springbootapi.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "users", key = "#id")
     public UserResponseDTO getUserById(Long id) {
         return userRepository.findById(id)
                 .map(userMapper::toResponseDTO)
@@ -47,6 +51,7 @@ public class UserService {
         return userMapper.toResponseDTO(savedUser);
     }
 
+    @CachePut(value = "users", key = "#id")
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(userRequestDTO.getUsername());
@@ -57,6 +62,7 @@ public class UserService {
         }).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

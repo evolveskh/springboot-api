@@ -9,6 +9,8 @@ import com.example.springbootapi.mapper.AccountMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,11 +73,13 @@ public class AccountService {
         return accountMapper.toDTO(savedAccount);
     }
 
+    @Cacheable(value = "accounts", key = "#id")
     public AccountDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
         return accountMapper.toDTO(account);
     }
 
+    @Cacheable(value = "balances", key = "#id")
     public BigDecimal getAccountBalance(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
         return account.getBalance();
@@ -106,6 +110,7 @@ public class AccountService {
     }
 
     @Transactional
+    @CacheEvict(value = {"accounts", "balances"}, key = "#id")
     public String deleteAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));

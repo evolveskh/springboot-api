@@ -10,6 +10,7 @@ import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
 
     @Transactional
+    @CacheEvict(value = "balances", allEntries = true)
     public TransactionDTO createTransaction(CreateTransactionRequest request){
 
         // Validate based on transaction type
