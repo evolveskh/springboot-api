@@ -5,6 +5,10 @@ import com.example.springbootapi.dto.TransactionDTO;
 import com.example.springbootapi.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +29,12 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions(){
-        List<TransactionDTO> transactions = transactionService.getAllTransactions();
+    public ResponseEntity<Page<TransactionDTO>> getAllTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort){
+        Pageable pageable = createPageable(page, size, sort);
+        Page<TransactionDTO> transactions = transactionService.getAllTransactions(pageable);
         return ResponseEntity.ok(transactions);
     }
 
@@ -37,14 +45,34 @@ public class TransactionController {
     }
 
     @GetMapping("/from/{fromAccountId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionFromAccount(@PathVariable Long fromAccountId){
-        List<TransactionDTO> transactions = transactionService.getTransactionsByFromAccountId(fromAccountId);
+    public ResponseEntity<Page<TransactionDTO>> getTransactionFromAccount(
+            @PathVariable Long fromAccountId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort){
+        Pageable pageable = createPageable(page, size, sort);
+        Page<TransactionDTO> transactions = transactionService.getTransactionsByFromAccountId(fromAccountId, pageable);
         return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/to/{toAccountId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionToAccount(@PathVariable Long toAccountId){
-        List<TransactionDTO> transactions = transactionService.getTransactionsByToAccountId(toAccountId);
+    public ResponseEntity<Page<TransactionDTO>> getTransactionToAccount(
+            @PathVariable Long toAccountId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort){
+        Pageable pageable = createPageable(page, size, sort);
+        Page<TransactionDTO> transactions = transactionService.getTransactionsByToAccountId(toAccountId, pageable);
         return ResponseEntity.ok(transactions);
+    }
+
+    private Pageable createPageable(int page, int size, String sort) {
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction direction = Sort.Direction.DESC;
+        if (sortParams.length > 1 && "asc".equalsIgnoreCase(sortParams[1])) {
+            direction = Sort.Direction.ASC;
+        }
+        return PageRequest.of(page, size, Sort.by(direction, sortField));
     }
 }

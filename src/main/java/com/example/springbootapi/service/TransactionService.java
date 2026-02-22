@@ -10,6 +10,8 @@ import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,31 +92,25 @@ public class TransactionService {
         return transactionMapper.toDTO(transaction);
     }
 
-    public List<TransactionDTO> getAllTransactions() {
-        return transactionRepository.findAll()
-                .stream()
-                .map(transactionMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<TransactionDTO> getAllTransactions(Pageable pageable) {
+        return transactionRepository.findAll(pageable)
+                .map(transactionMapper::toDTO);
     }
 
-    public List<TransactionDTO> getTransactionsByFromAccountId(Long fromAccountId) {
+    public Page<TransactionDTO> getTransactionsByFromAccountId(Long fromAccountId, Pageable pageable) {
         if (!accountRepository.existsById(fromAccountId)) {
             throw new ResourceNotFoundException("Account not found with id: " + fromAccountId);
         }
-        return transactionRepository.findByFromAccountId(fromAccountId)
-                .stream()
-                .map(transactionMapper::toDTO)
-                .collect(Collectors.toList());
+        return transactionRepository.findByFromAccountId(fromAccountId, pageable)
+                .map(transactionMapper::toDTO);
     }
 
-    public List<TransactionDTO> getTransactionsByToAccountId(Long toAccountId) {
+    public Page<TransactionDTO> getTransactionsByToAccountId(Long toAccountId, Pageable pageable) {
         if (!accountRepository.existsById(toAccountId)) {
             throw new ResourceNotFoundException("Account not found with id: " + toAccountId);
         }
-        return transactionRepository.findByToAccountId(toAccountId)
-                .stream()
-                .map(transactionMapper::toDTO)
-                .collect(Collectors.toList());
+        return transactionRepository.findByToAccountId(toAccountId, pageable)
+                .map(transactionMapper::toDTO);
     }
 
     //Helper: find an account or throw
