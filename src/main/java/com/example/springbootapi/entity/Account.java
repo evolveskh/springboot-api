@@ -31,6 +31,9 @@ public class Account {
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

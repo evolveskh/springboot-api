@@ -1,6 +1,7 @@
 package com.example.springbootapi.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +101,18 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                "Transaction conflict detected. Please retry your request.",
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     // Catch-all for any other unexpected errors
