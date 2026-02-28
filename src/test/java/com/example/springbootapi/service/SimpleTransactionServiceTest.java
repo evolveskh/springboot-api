@@ -9,11 +9,17 @@ import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.TransactionRepository;
+import com.example.springbootapi.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -41,8 +47,24 @@ public class SimpleTransactionServiceTest {
     @Mock
     private TransactionMapper transactionMapper;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private TransactionService transactionService;
+
+    @BeforeEach
+    void setUpSecurityContext() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("testuser", null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        );
+    }
+
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
 
     // ============================================
     // TEST 1: Happy Path - Everything Works

@@ -41,7 +41,7 @@ This is a RESTful banking API. The base package is `com.example.springbootapi`.
 - Stateless JWT; no sessions. `SecurityConfig` permits `/api/auth/**`, Swagger, and actuator endpoints. `POST /api/users` is open for registration; all other `/api/users/**` requires `ROLE_ADMIN`.
 - JWT claims include a `role` claim on access tokens and a `type: refresh` claim on refresh tokens. Tokens are signed with HMAC-SHA using the base64 key from `jwt.secret`.
 
-**Transaction logic** (`TransactionService`): `TRANSFER` requires both `fromAccountId` and `toAccountId`; `DEPOSIT` only `toAccountId`; `WITHDRAWAL` only `fromAccountId`. Balance updates happen in the same `@Transactional` method, and `balances` cache is fully evicted after each write.
+**Transaction logic** (`TransactionService`): `TRANSFER` requires both `fromAccountId` and `toAccountId`; `DEPOSIT` only `toAccountId`; `WITHDRAWAL` only `fromAccountId`. Balance updates happen in the same `@Transactional` method, and `balances` cache is fully evicted after each write. `Account` uses a JPA `@Version` field for optimistic locking — concurrent updates throw `ObjectOptimisticLockingFailureException`, which `GlobalExceptionHandler` maps to HTTP 409.
 
 **MapStruct mappers** in `mapper/` convert between JPA entities and DTOs. Lombok and MapStruct annotation processors are wired together in `pom.xml` using `lombok-mapstruct-binding` — the order in `annotationProcessorPaths` matters.
 

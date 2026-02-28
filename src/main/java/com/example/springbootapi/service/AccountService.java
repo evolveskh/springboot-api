@@ -9,8 +9,8 @@ import com.example.springbootapi.mapper.AccountMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,16 @@ public class AccountService {
     private static final String CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final int ACCOUNT_NUMBER_LENGTH = 42; // Similar to crypto wallet addresses
     private final AccountMapper accountMapper;
+
+    private boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private String currentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     /**
      * Generate a random account number similar to crypto wallet address
@@ -73,20 +83,27 @@ public class AccountService {
         return accountMapper.toDTO(savedAccount);
     }
 
-    @Cacheable(value = "accounts", key = "#id")
     public AccountDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
+        }
         return accountMapper.toDTO(account);
     }
 
-    @Cacheable(value = "balances", key = "#id")
     public BigDecimal getAccountBalance(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
+        }
         return account.getBalance();
     }
 
     public AccountDTO getAccountByAccountNumber(String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new ResourceNotFoundException("Account not found with account number: " + accountNumber));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
+        }
         return accountMapper.toDTO(account);
     }
 
@@ -96,6 +113,14 @@ public class AccountService {
             throw new ResourceNotFoundException("User not found with id: " + userId);
         }
 
+        if (!isAdmin()) {
+            User currentUser = userRepository.findByUsername(currentUsername())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            if (!currentUser.getId().equals(userId)) {
+                throw new AccessDeniedException("Access denied");
+            }
+        }
+
         List<Account> accounts = accountRepository.findByUserId(userId);
         return accounts.stream()
                 .map(accountMapper::toDTO)
@@ -103,6 +128,9 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAllAccounts() {
+        if (!isAdmin()) {
+            throw new AccessDeniedException("Access denied");
+        }
         List<Account> accounts = accountRepository.findAll();
         return accounts.stream()
                 .map(accountMapper::toDTO)
@@ -110,10 +138,13 @@ public class AccountService {
     }
 
     @Transactional
-    @CacheEvict(value = {"accounts", "balances"}, key = "#id")
     public String deleteAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
+        }
 
         String accountNumber = account.getAccountNumber();
         accountRepository.delete(account);

@@ -11,9 +11,13 @@ import com.example.springbootapi.repository.UserRepository;
 import com.example.springbootapi.service.AccountService;
 import com.example.springbootapi.service.TransactionService;
 import com.example.springbootapi.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +42,11 @@ public class ConcurrentTransactionIntegrationTest extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("concurrentuser", null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        );
+
         transactionRepository.deleteAll();
         accountRepository.deleteAll();
         userRepository.deleteAll();
@@ -58,6 +67,11 @@ public class ConcurrentTransactionIntegrationTest extends BaseIntegrationTest {
         transactionService.createTransaction(deposit);
     }
 
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
     @Test
     void concurrentWithdrawals_OnlyOneSucceeds_BalanceNeverNegative() throws InterruptedException {
         // Two threads simultaneously withdraw 100 from an account that only has 100.
@@ -75,6 +89,10 @@ public class ConcurrentTransactionIntegrationTest extends BaseIntegrationTest {
 
         for (int i = 0; i < threads; i++) {
             futures.add(executor.submit(() -> {
+                SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken("concurrentuser", null,
+                                List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                );
                 try {
                     startGate.await(); // All threads start at the same moment
                     CreateTransactionRequest req = new CreateTransactionRequest();
@@ -87,6 +105,8 @@ public class ConcurrentTransactionIntegrationTest extends BaseIntegrationTest {
                     failures.incrementAndGet();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                } finally {
+                    SecurityContextHolder.clearContext();
                 }
             }));
         }

@@ -13,11 +13,16 @@ import com.example.springbootapi.repository.UserRepository;
 import com.example.springbootapi.service.AccountService;
 import com.example.springbootapi.service.TransactionService;
 import com.example.springbootapi.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +52,11 @@ public class TransactionServiceIntegrationTest extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("testuser", null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        );
+
         transactionRepository.deleteAll();
         accountRepository.deleteAll();
         userRepository.deleteAll();
@@ -61,6 +71,11 @@ public class TransactionServiceIntegrationTest extends BaseIntegrationTest {
 
         account1Id = accountService.createAccount(new CreateAccountRequest(userId)).getId();
         account2Id = accountService.createAccount(new CreateAccountRequest(userId)).getId();
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

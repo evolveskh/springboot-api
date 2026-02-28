@@ -9,15 +9,16 @@ import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.TransactionRepository;
+import com.example.springbootapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,17 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
+    private final UserRepository userRepository;
+
+    private boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private String currentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Transactional
     @CacheEvict(value = "balances", allEntries = true)
@@ -46,6 +58,9 @@ public class TransactionService {
                     throw new IllegalArgumentException("Cannot transfer to the same account");
                 }
                 fromAccount = findAccount(request.getFromAccountId());
+                if (!isAdmin() && !fromAccount.getUser().getUsername().equals(currentUsername())) {
+                    throw new AccessDeniedException("Access denied");
+                }
                 toAccount = findAccount(request.getToAccountId());
                 if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
                     throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.getBalance() + ", Requested: " + request.getAmount());
@@ -61,6 +76,9 @@ public class TransactionService {
                     throw new IllegalArgumentException("Deposit transaction requires to account");
                 }
                 toAccount = findAccount(request.getToAccountId());
+                if (!isAdmin() && !toAccount.getUser().getUsername().equals(currentUsername())) {
+                    throw new AccessDeniedException("Access denied");
+                }
                 toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
                 accountRepository.save(toAccount);
                 break;
@@ -69,6 +87,9 @@ public class TransactionService {
                     throw new IllegalArgumentException("Withdrawal transaction requires from account");
                 }
                 fromAccount = findAccount(request.getFromAccountId());
+                if (!isAdmin() && !fromAccount.getUser().getUsername().equals(currentUsername())) {
+                    throw new AccessDeniedException("Access denied");
+                }
                 if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
                     throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.
                             getBalance() + ", Requested: " + request.getAmount());
@@ -91,25 +112,40 @@ public class TransactionService {
 
     public TransactionDTO getTransactionById(Long id){
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+        if (!isAdmin()) {
+            String username = currentUsername();
+            boolean ownsFrom = transaction.getFromAccount() != null && transaction.getFromAccount().getUser().getUsername().equals(username);
+            boolean ownsTo = transaction.getToAccount() != null && transaction.getToAccount().getUser().getUsername().equals(username);
+            if (!ownsFrom && !ownsTo) {
+                throw new AccessDeniedException("Access denied");
+            }
+        }
         return transactionMapper.toDTO(transaction);
     }
 
     public Page<TransactionDTO> getAllTransactions(Pageable pageable) {
+        if (!isAdmin()) {
+            throw new AccessDeniedException("Access denied");
+        }
         return transactionRepository.findAll(pageable)
                 .map(transactionMapper::toDTO);
     }
 
     public Page<TransactionDTO> getTransactionsByFromAccountId(Long fromAccountId, Pageable pageable) {
-        if (!accountRepository.existsById(fromAccountId)) {
-            throw new ResourceNotFoundException("Account not found with id: " + fromAccountId);
+        Account account = accountRepository.findById(fromAccountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + fromAccountId));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
         }
         return transactionRepository.findByFromAccountId(fromAccountId, pageable)
                 .map(transactionMapper::toDTO);
     }
 
     public Page<TransactionDTO> getTransactionsByToAccountId(Long toAccountId, Pageable pageable) {
-        if (!accountRepository.existsById(toAccountId)) {
-            throw new ResourceNotFoundException("Account not found with id: " + toAccountId);
+        Account account = accountRepository.findById(toAccountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + toAccountId));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
         }
         return transactionRepository.findByToAccountId(toAccountId, pageable)
                 .map(transactionMapper::toDTO);

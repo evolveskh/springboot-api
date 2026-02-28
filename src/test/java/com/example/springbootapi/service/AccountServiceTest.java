@@ -8,11 +8,16 @@ import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.AccountMapper;
 import com.example.springbootapi.repository.AccountRepository;
 import com.example.springbootapi.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -38,6 +43,19 @@ public class AccountServiceTest {
 
     @InjectMocks
     private AccountService accountService;
+
+    @BeforeEach
+    void setUpSecurityContext() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("testuser", null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        );
+    }
+
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     void createAccount_Success() {
