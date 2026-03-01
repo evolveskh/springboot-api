@@ -1,16 +1,22 @@
 package com.example.springbootapi.controller;
 
 import com.example.springbootapi.dto.AccountDTO;
+import com.example.springbootapi.dto.AccountStatementDTO;
 import com.example.springbootapi.dto.ApiResponse;
 import com.example.springbootapi.dto.CreateAccountRequest;
 import com.example.springbootapi.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,5 +67,14 @@ public class AccountController {
     public ResponseEntity<BigDecimal> getBalance(@PathVariable Long id) {
         BigDecimal balance = accountService.getAccountBalance(id);
         return ResponseEntity.ok(balance);
+    }
+
+    @GetMapping("/{id}/statement")
+    public ResponseEntity<AccountStatementDTO> getAccountStatement(
+            @PathVariable Long id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(accountService.getAccountStatement(id, from, to, pageable));
     }
 }

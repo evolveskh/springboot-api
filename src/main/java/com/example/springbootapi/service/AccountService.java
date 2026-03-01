@@ -1,14 +1,20 @@
 package com.example.springbootapi.service;
 
 import com.example.springbootapi.dto.AccountDTO;
+import com.example.springbootapi.dto.AccountStatementDTO;
 import com.example.springbootapi.dto.CreateAccountRequest;
+import com.example.springbootapi.dto.TransactionDTO;
 import com.example.springbootapi.entity.Account;
 import com.example.springbootapi.entity.User;
 import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.AccountMapper;
+import com.example.springbootapi.mapper.TransactionMapper;
 import com.example.springbootapi.repository.AccountRepository;
+import com.example.springbootapi.repository.TransactionRepository;
 import com.example.springbootapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +36,8 @@ public class AccountService {
     private static final String CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final int ACCOUNT_NUMBER_LENGTH = 42; // Similar to crypto wallet addresses
     private final AccountMapper accountMapper;
+    private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
 
     private boolean isAdmin() {
         return SecurityContextHolder.getContext().getAuthentication()
@@ -150,6 +160,41 @@ public class AccountService {
         accountRepository.delete(account);
 
         return "Account with ID " + id + " and account number " + accountNumber + " has been successfully deleted";
+    }
+
+    public AccountStatementDTO getAccountStatement(Long accountId, LocalDate from, LocalDate to, Pageable pageable) {
+        if (from.isAfter(to)) {
+            throw new IllegalArgumentException("'from' date must not be after 'to' date");
+        }
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + accountId));
+        if (!isAdmin() && !account.getUser().getUsername().equals(currentUsername())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        LocalDateTime fromInstant = from.atStartOfDay();
+        LocalDateTime toExclusive = to.plusDays(1).atStartOfDay();
+
+        Page<TransactionDTO> txPage = transactionRepository
+                .findStatementTransactions(accountId, fromInstant, toExclusive, pageable)
+                .map(transactionMapper::toDTO);
+
+        BigDecimal netFromFrom = transactionRepository.sumNetEffectFrom(accountId, fromInstant);
+        BigDecimal openingBalance = account.getBalance().subtract(netFromFrom);
+
+        BigDecimal netInRange = transactionRepository.sumNetEffectInRange(accountId, fromInstant, toExclusive);
+        BigDecimal closingBalance = openingBalance.add(netInRange);
+
+        return AccountStatementDTO.builder()
+                .accountId(account.getId())
+                .accountNumber(account.getAccountNumber())
+                .from(from)
+                .to(to)
+                .openingBalance(openingBalance)
+                .closingBalance(closingBalance)
+                .transactions(txPage)
+                .build();
     }
 }
 

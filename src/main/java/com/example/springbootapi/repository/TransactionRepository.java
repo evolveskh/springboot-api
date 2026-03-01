@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,4 +38,43 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t FROM Transaction t LEFT JOIN FETCH t.fromAccount fa LEFT JOIN FETCH fa.user LEFT JOIN FETCH t.toAccount ta LEFT JOIN FETCH ta.user WHERE t.id = :id")
     Optional<Transaction> findByIdWithAccounts(@Param("id") Long id);
+
+    @Query("""
+        SELECT t FROM Transaction t
+        WHERE t.status = com.example.springbootapi.enums.TransactionStatus.COMPLETED
+        AND t.createdAt >= :fromInstant AND t.createdAt < :toExclusive
+        AND (t.fromAccount.id = :accountId OR t.toAccount.id = :accountId)
+    """)
+    Page<Transaction> findStatementTransactions(
+            @Param("accountId") Long accountId,
+            @Param("fromInstant") LocalDateTime fromInstant,
+            @Param("toExclusive") LocalDateTime toExclusive,
+            Pageable pageable);
+
+    @Query("""
+        SELECT COALESCE(SUM(
+            CASE WHEN t.toAccount.id = :accountId THEN t.amount ELSE -t.amount END
+        ), 0)
+        FROM Transaction t
+        WHERE t.status = com.example.springbootapi.enums.TransactionStatus.COMPLETED
+        AND t.createdAt >= :fromInstant
+        AND (t.fromAccount.id = :accountId OR t.toAccount.id = :accountId)
+    """)
+    BigDecimal sumNetEffectFrom(
+            @Param("accountId") Long accountId,
+            @Param("fromInstant") LocalDateTime fromInstant);
+
+    @Query("""
+        SELECT COALESCE(SUM(
+            CASE WHEN t.toAccount.id = :accountId THEN t.amount ELSE -t.amount END
+        ), 0)
+        FROM Transaction t
+        WHERE t.status = com.example.springbootapi.enums.TransactionStatus.COMPLETED
+        AND t.createdAt >= :fromInstant AND t.createdAt < :toExclusive
+        AND (t.fromAccount.id = :accountId OR t.toAccount.id = :accountId)
+    """)
+    BigDecimal sumNetEffectInRange(
+            @Param("accountId") Long accountId,
+            @Param("fromInstant") LocalDateTime fromInstant,
+            @Param("toExclusive") LocalDateTime toExclusive);
 }

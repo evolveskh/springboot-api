@@ -77,6 +77,7 @@ Open `http://localhost:8080/swagger-ui.html` in your browser.
 | GET | `/api/accounts/number/{accountNumber}` | Get account by number | Yes |
 | GET | `/api/accounts/user/{userId}` | Get accounts for a user | Yes |
 | GET | `/api/accounts/{id}/balance` | Get account balance | Yes |
+| GET | `/api/accounts/{id}/statement` | Get account statement (paginated, date range) | Yes |
 | DELETE | `/api/accounts/{id}` | Delete account | Yes |
 
 ### Transactions
