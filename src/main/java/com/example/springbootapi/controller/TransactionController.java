@@ -2,6 +2,7 @@ package com.example.springbootapi.controller;
 
 import com.example.springbootapi.dto.CreateTransactionRequest;
 import com.example.springbootapi.dto.TransactionDTO;
+import com.example.springbootapi.enums.TransactionStatus;
 import com.example.springbootapi.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,23 @@ public class TransactionController {
         Pageable pageable = createPageable(page, size, sort);
         Page<TransactionDTO> transactions = transactionService.getTransactionsByFromAccountId(fromAccountId, pageable);
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<TransactionDTO>> getTransactionsByStatus(
+            @PathVariable TransactionStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort) {
+        Pageable pageable = createPageable(page, size, sort);
+        Page<TransactionDTO> transactions = transactionService.getTransactionsByStatus(status, pageable);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/{id}/retry")
+    public ResponseEntity<TransactionDTO> retryTransaction(@PathVariable Long id) {
+        TransactionDTO transaction = transactionService.retryTransaction(id);
+        return ResponseEntity.ok(transaction);
     }
 
     @GetMapping("/to/{toAccountId}")

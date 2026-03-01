@@ -8,6 +8,7 @@ A RESTful banking API built with Spring Boot 3.4.2, featuring JWT authentication
 - Role-based access control (USER / ADMIN)
 - Account management with unique crypto-style account numbers
 - Financial transactions: deposits, withdrawals, and transfers
+- Transaction status tracking (PENDING → COMPLETED / FAILED) with retry support
 - Redis caching for account and balance lookups
 - Database schema versioning via Flyway
 - OpenAPI / Swagger UI documentation
@@ -83,10 +84,12 @@ Open `http://localhost:8080/swagger-ui.html` in your browser.
 | Method | Endpoint | Description | Auth Required |
 |---|---|---|---|
 | POST | `/api/transactions` | Create a transaction | Yes |
-| GET | `/api/transactions` | List all transactions (paginated) | Yes |
+| GET | `/api/transactions` | List all transactions (paginated) | Yes (Admin) |
 | GET | `/api/transactions/{id}` | Get transaction by ID | Yes |
 | GET | `/api/transactions/from/{accountId}` | Transactions sent from account | Yes |
 | GET | `/api/transactions/to/{accountId}` | Transactions received by account | Yes |
+| GET | `/api/transactions/status/{status}` | Filter transactions by status | Yes |
+| POST | `/api/transactions/{id}/retry` | Retry a FAILED transaction | Yes |
 
 ### Users (Admin Only)
 
@@ -127,6 +130,18 @@ Example request body for a transfer:
 }
 ```
 
+## Transaction Status
+
+Every transaction is persisted with a status field, even when the operation fails. This enables debugging and retry workflows.
+
+| Status | Meaning |
+|---|---|
+| `PENDING` | Balance update in progress |
+| `COMPLETED` | Balance update succeeded |
+| `FAILED` | Balance update failed (e.g. insufficient funds, optimistic lock conflict) |
+
+Failed transactions can be retried via `POST /api/transactions/{id}/retry` once the underlying issue is resolved (e.g. after adding funds). Retrying a `COMPLETED` transaction returns `409 Conflict`.
+
 ## Configuration
 
 Key settings in `src/main/resources/application.properties`:
@@ -163,7 +178,7 @@ src/
         ├── controller/      # REST controllers
         ├── dto/             # Request / response DTOs
         ├── entity/          # JPA entities
-        ├── enums/           # Role, TransactionType
+        ├── enums/           # Role, TransactionType, TransactionStatus
         ├── exception/       # Custom exceptions
         ├── mapper/          # MapStruct mappers
         ├── repository/      # Spring Data repositories
@@ -171,5 +186,5 @@ src/
         └── service/         # Business logic
     └── resources/
         ├── application.properties
-        └── db/migration/    # Flyway SQL migrations
+        └── db/migration/    # Flyway SQL migrations (V1, V2, V3)
 ```

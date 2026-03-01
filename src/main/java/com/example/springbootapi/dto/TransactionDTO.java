@@ -1,5 +1,6 @@
 package com.example.springbootapi.dto;
 
+import com.example.springbootapi.enums.TransactionStatus;
 import com.example.springbootapi.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class TransactionDTO {
     private String toAccountNumber;
     private BigDecimal amount;
     private TransactionType type;
+    private TransactionStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

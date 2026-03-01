@@ -4,6 +4,7 @@ import com.example.springbootapi.dto.CreateTransactionRequest;
 import com.example.springbootapi.dto.TransactionDTO;
 import com.example.springbootapi.entity.Account;
 import com.example.springbootapi.entity.Transaction;
+import com.example.springbootapi.enums.TransactionStatus;
 import com.example.springbootapi.exception.InsufficientFundsException;
 import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.TransactionMapper;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,16 +43,14 @@ public class TransactionService {
 
     @Transactional
     @CacheEvict(value = "balances", allEntries = true)
-    public TransactionDTO createTransaction(CreateTransactionRequest request){
+    public TransactionDTO createTransaction(CreateTransactionRequest request) {
 
-        // Validate based on transaction type
+        // Upfront validation — these throw before any save (no record persisted)
         Account fromAccount = null;
         Account toAccount = null;
 
         switch (request.getType()) {
-
             case TRANSFER:
-                // validate make sure we have both accounts
                 if (request.getFromAccountId() == null || request.getToAccountId() == null) {
                     throw new IllegalArgumentException("Transfer transaction requires both from and to accounts");
                 }
@@ -62,14 +62,6 @@ public class TransactionService {
                     throw new AccessDeniedException("Access denied");
                 }
                 toAccount = findAccount(request.getToAccountId());
-                if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
-                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.getBalance() + ", Requested: " + request.getAmount());
-                } else {
-                    fromAccount.setBalance(fromAccount.getBalance().subtract(request.getAmount()));
-                    toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
-                }
-                accountRepository.save(fromAccount);
-                accountRepository.save(toAccount);
                 break;
             case DEPOSIT:
                 if (request.getToAccountId() == null) {
@@ -79,8 +71,6 @@ public class TransactionService {
                 if (!isAdmin() && !toAccount.getUser().getUsername().equals(currentUsername())) {
                     throw new AccessDeniedException("Access denied");
                 }
-                toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
-                accountRepository.save(toAccount);
                 break;
             case WITHDRAWAL:
                 if (request.getFromAccountId() == null) {
@@ -90,27 +80,85 @@ public class TransactionService {
                 if (!isAdmin() && !fromAccount.getUser().getUsername().equals(currentUsername())) {
                     throw new AccessDeniedException("Access denied");
                 }
-                if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
-                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.
-                            getBalance() + ", Requested: " + request.getAmount());
-                }
-                fromAccount.setBalance(fromAccount.getBalance().subtract(request.getAmount()));
-                accountRepository.save(fromAccount);
                 break;
         }
 
-        // Build and save transaction
+        // Save PENDING record to get an ID
         Transaction transaction = Transaction.builder()
                 .fromAccount(fromAccount)
                 .toAccount(toAccount)
                 .amount(request.getAmount())
                 .type(request.getType())
+                .status(TransactionStatus.PENDING)
                 .build();
+        transactionRepository.save(transaction);
+        transactionRepository.flush();
+
+        // Attempt balance update; catch failures so FAILED record commits
+        try {
+            executeBalanceUpdate(fromAccount, toAccount, request.getAmount(), request.getType());
+            transaction.setStatus(TransactionStatus.COMPLETED);
+        } catch (InsufficientFundsException | ResourceNotFoundException | ObjectOptimisticLockingFailureException e) {
+            transaction.setStatus(TransactionStatus.FAILED);
+        }
+
         Transaction savedTransaction = transactionRepository.save(transaction);
         return transactionMapper.toDTO(savedTransaction);
     }
 
-    public TransactionDTO getTransactionById(Long id){
+    @Transactional
+    @CacheEvict(value = "balances", allEntries = true)
+    public TransactionDTO retryTransaction(Long id) {
+        Transaction transaction = transactionRepository.findByIdWithAccounts(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+
+        if (!isAdmin()) {
+            String username = currentUsername();
+            boolean ownsFrom = transaction.getFromAccount() != null && transaction.getFromAccount().getUser().getUsername().equals(username);
+            boolean ownsTo = transaction.getToAccount() != null && transaction.getToAccount().getUser().getUsername().equals(username);
+            if (!ownsFrom && !ownsTo) {
+                throw new AccessDeniedException("Access denied");
+            }
+        }
+
+        if (transaction.getStatus() == TransactionStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot retry a completed transaction");
+        }
+
+        // Re-fetch accounts fresh to avoid stale balances
+        Account fromAccount = transaction.getFromAccount() != null
+                ? accountRepository.findById(transaction.getFromAccount().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + transaction.getFromAccount().getId()))
+                : null;
+        Account toAccount = transaction.getToAccount() != null
+                ? accountRepository.findById(transaction.getToAccount().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + transaction.getToAccount().getId()))
+                : null;
+
+        transaction.setStatus(TransactionStatus.PENDING);
+        transactionRepository.save(transaction);
+
+        try {
+            executeBalanceUpdate(fromAccount, toAccount, transaction.getAmount(), transaction.getType());
+            transaction.setStatus(TransactionStatus.COMPLETED);
+        } catch (InsufficientFundsException | ResourceNotFoundException | ObjectOptimisticLockingFailureException e) {
+            transaction.setStatus(TransactionStatus.FAILED);
+        }
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return transactionMapper.toDTO(savedTransaction);
+    }
+
+    public Page<TransactionDTO> getTransactionsByStatus(TransactionStatus status, Pageable pageable) {
+        if (isAdmin()) {
+            return transactionRepository.findByStatus(status, pageable)
+                    .map(transactionMapper::toDTO);
+        }
+        return transactionRepository.findByStatusAndOwner(status, currentUsername(), pageable)
+                .map(transactionMapper::toDTO);
+    }
+
+    public TransactionDTO getTransactionById(Long id) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
         if (!isAdmin()) {
             String username = currentUsername();
@@ -151,9 +199,32 @@ public class TransactionService {
                 .map(transactionMapper::toDTO);
     }
 
-    //Helper: find an account or throw
+    private void executeBalanceUpdate(Account fromAccount, Account toAccount, java.math.BigDecimal amount, com.example.springbootapi.enums.TransactionType type) {
+        switch (type) {
+            case TRANSFER:
+                if (fromAccount.getBalance().compareTo(amount) < 0) {
+                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.getBalance() + ", Requested: " + amount);
+                }
+                fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+                toAccount.setBalance(toAccount.getBalance().add(amount));
+                accountRepository.save(fromAccount);
+                accountRepository.save(toAccount);
+                break;
+            case DEPOSIT:
+                toAccount.setBalance(toAccount.getBalance().add(amount));
+                accountRepository.save(toAccount);
+                break;
+            case WITHDRAWAL:
+                if (fromAccount.getBalance().compareTo(amount) < 0) {
+                    throw new InsufficientFundsException("Insufficient funds. Available: " + fromAccount.getBalance() + ", Requested: " + amount);
+                }
+                fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+                accountRepository.save(fromAccount);
+                break;
+        }
+    }
+
     private Account findAccount(Long accountId) {
         return accountRepository.findById(accountId).orElseThrow(() -> new ResourceNotFoundException("Account not found with id:" + accountId));
     }
 }
-

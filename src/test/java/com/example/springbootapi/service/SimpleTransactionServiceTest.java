@@ -4,6 +4,7 @@ import com.example.springbootapi.dto.CreateTransactionRequest;
 import com.example.springbootapi.dto.TransactionDTO;
 import com.example.springbootapi.entity.Account;
 import com.example.springbootapi.entity.Transaction;
+import com.example.springbootapi.enums.TransactionStatus;
 import com.example.springbootapi.enums.TransactionType;
 import com.example.springbootapi.exception.ResourceNotFoundException;
 import com.example.springbootapi.mapper.TransactionMapper;
@@ -71,7 +72,7 @@ public class SimpleTransactionServiceTest {
     // ============================================
     @Test
     void createTransaction_WithValidTransfer_Success() {
-        // ARRANGE - Prepare test data
+        // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
         request.setFromAccountId(1L);
         request.setToAccountId(2L);
@@ -88,31 +89,31 @@ public class SimpleTransactionServiceTest {
                 .balance(new BigDecimal("500.00"))
                 .build();
 
-        Transaction savedTransaction = new Transaction();
-        savedTransaction.setId(1L);
+        Transaction pendingTransaction = new Transaction();
+        pendingTransaction.setId(1L);
+        pendingTransaction.setStatus(TransactionStatus.COMPLETED);
 
         TransactionDTO expectedDTO = new TransactionDTO();
         expectedDTO.setId(1L);
 
-        // Tell mocks what to return
         when(accountRepository.findById(1L)).thenReturn(Optional.of(fromAccount));
         when(accountRepository.findById(2L)).thenReturn(Optional.of(toAccount));
-        when(transactionRepository.save(any(Transaction.class))).thenReturn(savedTransaction);
-        when(transactionMapper.toDTO(savedTransaction)).thenReturn(expectedDTO);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(pendingTransaction);
+        when(transactionMapper.toDTO(pendingTransaction)).thenReturn(expectedDTO);
 
-        // ACT - Call the method
+        // ACT
         TransactionDTO result = transactionService.createTransaction(request);
 
-        // ASSERT - Check results
-        assertNotNull(result);  // Result should not be null
-        assertEquals(1L, result.getId());  // Should have ID = 1
+        // ASSERT
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
         assertEquals(new BigDecimal("900.00"), fromAccount.getBalance());
         assertEquals(new BigDecimal("600.00"), toAccount.getBalance());
 
-        // Verify repository was called
-        verify(accountRepository).findById(1L);  // Should look up from account
-        verify(accountRepository).findById(2L);  // Should look up to account
-        verify(transactionRepository).save(any(Transaction.class));  // Should save
+        verify(accountRepository).findById(1L);
+        verify(accountRepository).findById(2L);
+        // Save called twice: once for PENDING, once for COMPLETED
+        verify(transactionRepository, times(2)).save(any(Transaction.class));
     }
 
     // ============================================
@@ -122,25 +123,20 @@ public class SimpleTransactionServiceTest {
     void createTransaction_AccountNotFound_ThrowsException() {
         // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
-        request.setFromAccountId(999L);  // Account that doesn't exist!
+        request.setFromAccountId(999L);
         request.setToAccountId(2L);
         request.setAmount(new BigDecimal("100.00"));
         request.setType(TransactionType.TRANSFER);
 
-        // Mock returns empty (account not found)
         when(accountRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // ACT + ASSERT
-        // Expect exception to be thrown
+        // ACT + ASSERT — upfront validation throws before any save
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
                 () -> transactionService.createTransaction(request)
         );
 
-        // Check exception message
         assertTrue(exception.getMessage().contains("Account not found with id:999"));
-
-        // Verify save was NEVER called (because exception was thrown first)
         verify(transactionRepository, never()).save(any());
     }
 
@@ -152,7 +148,7 @@ public class SimpleTransactionServiceTest {
         // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
         request.setFromAccountId(1L);
-        request.setToAccountId(null);  // Missing!
+        request.setToAccountId(null);
         request.setAmount(new BigDecimal("100.00"));
         request.setType(TransactionType.TRANSFER);
 
@@ -173,7 +169,7 @@ public class SimpleTransactionServiceTest {
         // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
         request.setFromAccountId(1L);
-        request.setToAccountId(1L);  // Same account!
+        request.setToAccountId(1L);
         request.setAmount(new BigDecimal("100.00"));
         request.setType(TransactionType.TRANSFER);
 
@@ -193,7 +189,7 @@ public class SimpleTransactionServiceTest {
     void createTransaction_Deposit_Success() {
         // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
-        request.setFromAccountId(null);  // No from account for deposit!
+        request.setFromAccountId(null);
         request.setToAccountId(1L);
         request.setAmount(new BigDecimal("500.00"));
         request.setType(TransactionType.DEPOSIT);
@@ -204,6 +200,7 @@ public class SimpleTransactionServiceTest {
                 .build();
 
         Transaction savedTransaction = new Transaction();
+        savedTransaction.setStatus(TransactionStatus.COMPLETED);
         TransactionDTO expectedDTO = new TransactionDTO();
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(toAccount));
@@ -217,9 +214,9 @@ public class SimpleTransactionServiceTest {
         assertNotNull(result);
         assertEquals(new BigDecimal("1500.00"), toAccount.getBalance());
 
-        // Verify only TO account was looked up (no FROM account)
         verify(accountRepository, times(1)).findById(1L);
         verify(accountRepository).save(toAccount);
+        verify(transactionRepository, times(2)).save(any(Transaction.class));
     }
 
     // ============================================
@@ -240,6 +237,7 @@ public class SimpleTransactionServiceTest {
                 .build();
 
         Transaction savedTransaction = new Transaction();
+        savedTransaction.setStatus(TransactionStatus.COMPLETED);
         TransactionDTO expectedDTO = new TransactionDTO();
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(fromAccount));
@@ -255,13 +253,14 @@ public class SimpleTransactionServiceTest {
 
         verify(accountRepository).findById(1L);
         verify(accountRepository).save(fromAccount);
+        verify(transactionRepository, times(2)).save(any(Transaction.class));
     }
 
     // ============================================
-    // TEST 7: Sad Path - Insufficient Funds
+    // TEST 7: Insufficient Funds - Returns FAILED status (no exception thrown)
     // ============================================
     @Test
-    void createTransaction_InsufficientFunds_ThrowsException() {
+    void createTransaction_InsufficientFunds_ReturnsFailed() {
         // ARRANGE
         CreateTransactionRequest request = new CreateTransactionRequest();
         request.setFromAccountId(1L);
@@ -279,16 +278,29 @@ public class SimpleTransactionServiceTest {
                 .balance(new BigDecimal("500.00"))
                 .build();
 
+        Transaction savedTransaction = new Transaction();
+        savedTransaction.setStatus(TransactionStatus.FAILED);
+        TransactionDTO expectedDTO = new TransactionDTO();
+        expectedDTO.setStatus(TransactionStatus.FAILED);
+
         when(accountRepository.findById(1L)).thenReturn(Optional.of(fromAccount));
         when(accountRepository.findById(2L)).thenReturn(Optional.of(toAccount));
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(savedTransaction);
+        when(transactionMapper.toDTO(savedTransaction)).thenReturn(expectedDTO);
 
-        // ACT + ASSERT
-        assertThrows(com.example.springbootapi.exception.InsufficientFundsException.class,
-                () -> transactionService.createTransaction(request)
-        );
+        // ACT — no exception; returns DTO with FAILED status
+        TransactionDTO result = transactionService.createTransaction(request);
 
-        // Verify save was NEVER called
-        verify(transactionRepository, never()).save(any());
+        // ASSERT
+        assertNotNull(result);
+        assertEquals(TransactionStatus.FAILED, result.getStatus());
+
+        // Save called twice: once for PENDING, once for FAILED
+        verify(transactionRepository, times(2)).save(any(Transaction.class));
+
+        // Balance unchanged
+        assertEquals(new BigDecimal("1000.00"), fromAccount.getBalance());
+        assertEquals(new BigDecimal("500.00"), toAccount.getBalance());
     }
 
     // ============================================

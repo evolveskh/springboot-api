@@ -1,0 +1,35 @@
+### Variables
+@baseUrl = http://localhost:8080
+@token = <replace_with_jwt_token>
+
+### Create transaction with insufficient funds (should return status: FAILED)
+POST {{baseUrl}}/api/transactions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fromAccountId": 1,
+  "toAccountId": 2,
+  "amount": 999999.00,
+  "type": "TRANSFER"
+}
+
+### Retry a failed transaction (replace {id} with actual failed transaction ID)
+POST {{baseUrl}}/api/transactions/1/retry
+Authorization: Bearer {{token}}
+
+### Get all FAILED transactions (admin sees all, user sees only owned)
+GET {{baseUrl}}/api/transactions/status/FAILED
+Authorization: Bearer {{token}}
+
+### Get COMPLETED transactions with pagination
+GET {{baseUrl}}/api/transactions/status/COMPLETED?page=0&size=5&sort=id,desc
+Authorization: Bearer {{token}}
+
+### Get PENDING transactions
+GET {{baseUrl}}/api/transactions/status/PENDING
+Authorization: Bearer {{token}}
+
+### Retry a COMPLETED transaction (expect 409 Conflict)
+POST {{baseUrl}}/api/transactions/1/retry
+Authorization: Bearer {{token}}

@@ -1,5 +1,6 @@
 package com.example.springbootapi.entity;
 
+import com.example.springbootapi.enums.TransactionStatus;
 import com.example.springbootapi.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,10 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
     private TransactionType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionStatus status;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
