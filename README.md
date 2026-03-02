@@ -2,6 +2,9 @@
 
 A RESTful banking API built with Spring Boot 3.4.2, featuring JWT authentication, Redis caching, and PostgreSQL persistence.
 
+**Live:** https://springboot-api-production-7cbd.up.railway.app
+**Docs:** https://springboot-api-production-7cbd.up.railway.app/swagger-ui.html
+
 ## Features
 
 - JWT-based authentication with access and refresh tokens
@@ -27,7 +30,7 @@ A RESTful banking API built with Spring Boot 3.4.2, featuring JWT authentication
 | Mapping | MapStruct |
 | Docs | SpringDoc OpenAPI |
 | Testing | JUnit 5 + TestContainers |
-| Infrastructure | Docker Compose |
+| Infrastructure | Railway (app), Neon (Postgres), Upstash (Redis) |
 
 ## Prerequisites
 
